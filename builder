@@ -38,11 +38,13 @@ install_nginx() {
 
         msg "Current directory listing"
         ls 
+        msg "move into $nginx_stage_dir "
+        cd $nginx_stage_dir
         msg "$nginx_stage_dir listing"
         ls $nginx_stage_dir
         msg "now try to compile"
         export CFLAGS="-O3 -pipe"
-        $nginx_stage_dir/configure   \
+           ./configure   \
             --prefix=$nginx_install_dir \
             --with-http_addition_module \
             --with-http_dav_module \
