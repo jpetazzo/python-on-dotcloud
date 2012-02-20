@@ -76,7 +76,12 @@ EOF
     rsync -aH --delete --exclude "data" * ~/current/
 }
 
+msg "Starting"
+msg "Move to app root"
 move_to_approot
+msg "install uwsgi"
 install_uwsgi
+msg "install nginx"
 install_nginx # could be replaced by something else
+msg "install application"
 install_application
