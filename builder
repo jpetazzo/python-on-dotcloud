@@ -31,6 +31,7 @@ install_nginx() {
     # install nginx
     if [ ! -d $nginx_install_dir ] ; then
         mkdir -p $nginx_install_dir
+        mkdir -p $nginx_stage_dir
 
         wget -O - $nginx_url | tar -C $nginx_stage_dir --strip-components=1 -zxf -
         [ $? -eq 0 ] || die "can't fetch nginx"
