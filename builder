@@ -36,6 +36,11 @@ install_nginx() {
         wget -O - $nginx_url | tar -C $nginx_stage_dir --strip-components=1 -zxf -
         [ $? -eq 0 ] || die "can't fetch nginx"
 
+        msg "Current directory listing"
+        ls 
+        msg "$nginx_stage_dir listing"
+        ls $nginx_stage_dir
+        msg "now try to compile"
         export CFLAGS="-O3 -pipe"
         $nginx_stage_dir/configure   \
             --prefix=$nginx_install_dir \
