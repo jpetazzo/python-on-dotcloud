@@ -1,0 +1,13 @@
+ruby:
+    type: custom
+    buildscript: builder
+    systempackages:
+        # needed for the Nginx rewrite module
+        - libpcre3-dev
+    processes:
+        nginx: nginx
+    # Could be moved to environment to make them mutable after the initial build
+    config:
+        # This is directly used by "rvm install"
+        ruby_version: 1.9.2
+        rack_env: production
