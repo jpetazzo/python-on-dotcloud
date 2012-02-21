@@ -134,3 +134,5 @@ install_nginx
 
 msg "Step 5: install application::"
 install_application
+
+msg "All done..."
