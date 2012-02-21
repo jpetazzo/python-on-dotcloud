@@ -2,11 +2,12 @@
 
 shopt -s extglob
 
+start_dir=`pwd`
 nginx_install_dir="$HOME/nginx"
-nginx_stage_dir="$HOME/stage"
+nginx_stage_dir="$start_dir/tmp/stage"
 virtualenv_dir="$HOME/env"
 pip_install="$virtualenv_dir/bin/pip install"
-start_dir=`pwd`
+
 
 msg() {
     echo -e "\033[1;32m-->\033[0m $0:" $*
@@ -49,10 +50,10 @@ install_nginx() {
     msg "Nginx install directory: $nginx_install_dir"
 
     # install nginx
-    #if [ ! -d $nginx_install_dir ] ; then
+    if [ ! -d $nginx_install_dir ] ; then
         # just temp until I figure out what is wrong with build.
-        rm -rf $nginx_install_dir
-        rm -rf $nginx_stage_dir
+        #rm -rf $nginx_install_dir
+        #rm -rf $nginx_stage_dir
     #fi
         mkdir -p $nginx_install_dir
         mkdir -p $nginx_stage_dir
@@ -83,9 +84,9 @@ install_nginx() {
         
         ls -al $nginx_install_dir
         rm $nginx_install_dir/conf/*.default
-    #else
-    #    msg "Nginx already installed"
-    #fi
+    else
+        msg "Nginx already installed"
+    fi
     
     #move_to_approot
     ls -al
@@ -105,14 +106,14 @@ install_nginx() {
 
 
 install_application() {
-    cat >> profile << EOF
+    cat >> $start_dir/profile << EOF
 export PATH="$nginx_install_dir/sbin:$PATH"
 EOF
-    mv profile ~/
+    mv $start_dir/profile ~/
 
     # Use ~/code and ~/current like the regular Ruby service for better compatibility
-    msg "installing application to ~/current/"
-    rsync -avH --delete --exclude "data" * ~/current/
+    msg "installing application to ~/current/ from $start_dir"
+    rsync -avH --delete --exclude "data" $start_dir/* ~/current/
 }
 
 msg "Starting at $start_dir"
