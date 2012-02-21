@@ -8,7 +8,7 @@ nginx_install_dir="$HOME/nginx"
 nginx_stage_dir="$start_dir/tmp/stage"
 virtualenv_dir="$HOME/env"
 pip_install="$virtualenv_dir/bin/pip install"
-requirments_file = "$HOME/current/requirements.txt"
+requirments_file="$HOME/current/requirements.txt"
 
 # functions
 msg() {
