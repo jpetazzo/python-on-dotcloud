@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # check if they have newrelic enabled, if so then set it up
-if test "$SERVICE_NEWRELIC_LICENSE_KEY" ; then
+if test "$PLUGIN_NEWRELIC_ENABLED" ; then
     NEW_RELIC_CONFIG_FILE=/home/dotcloud/current/newrelic.ini
     export NEW_RELIC_CONFIG_FILE
     command="/home/dotcloud/env/bin/newrelic-admin run-program "

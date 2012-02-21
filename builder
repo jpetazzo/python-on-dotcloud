@@ -35,22 +35,32 @@ create_virtualenv() {
     fi
 }
 
+add_newrelic_to_profile(){
+   cat >> $start_dir/profile << EOF
+   export PLUGIN_NEWRELIC_ENABLED=true
+EOF
+
+}
+
 install_newrelic() {
     newrelic_app_name = $DOTCLOUD_PROJECT"."$DOTCLOUD_SERVICE_NAME
     
-    if test $SERVICE_NEWRELIC_LICENSE_KEY ; then
+    if test $SERVICE_CONFIG_NEWRELIC_LICENSE_KEY ; then
        msg "You have entered your NewRelic license key, therefore you would like to use NewRelic. Adding it now.. "
        
        # create the newrelic.ini file
        msg "Build the newrelic.ini file and put it in $HOME/current/newrelic.ini "
        
        sed > $HOME/current/newrelic.ini < $newrelic_config_template    \
-        -e "s/@NEWRELIC_LICENSE_KEY@/${SERVICE_NEWRELIC_LICENSE_KEY}/g" \
+        -e "s/@NEWRELIC_LICENSE_KEY@/${SERVICE_CONFIG_NEWRELIC_LICENSE_KEY}/g" \
         -e "s/@NEWRELIC_APP_NAME@/${newrelic_app_name}/g"
 
        # install newrelic agent
        msg "install newrelic from pip:"
        $pip_install newrelic
+       
+       msg "add newrelic info to the profile"
+       add_newrelic_to_profile()
 
     else
        msg "New Relic isn't enabled skipping this step."
@@ -123,10 +133,15 @@ install_nginx() {
 
 }
 
-install_application() {
-    cat >> $start_dir/profile << EOF
-export PATH="$nginx_install_dir/sbin:$PATH"
+build_profile(){
+    cat > $start_dir/profile << EOF
+    export PATH="$nginx_install_dir/sbin:$PATH"
 EOF
+
+}
+
+install_application() {
+
     msg "change directories to $start_dir"
     cd $start_dir
     
@@ -156,13 +171,16 @@ install_uwsgi
 msg "Step 3: install nginx::"
 install_nginx
 
-msg "Step 4: install application::"
+msg "Step 4: build profile::"
+build_profile
+
+msg "Step 5: check if we need to install NewRelic::"
+install_newrelic
+
+msg "Step 6: install application::"
 install_application
 
-msg "Step 5: install application specific requirements::"
+msg "Step 7: install application specific requirements::"
 install_requirements
-
-msg "Step 6: check if we need to install NewRelic::"
-install_newrelic
 
 msg "All done..."
