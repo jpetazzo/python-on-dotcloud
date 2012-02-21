@@ -35,3 +35,25 @@ Here is an example of a dotcloud.yml with NewRelic turned on::
                 # This is only needed if you want to enable new relic support
                 # add your license key. Comment it out, or remove all together if you want it disabled.
             newrelic_license_key: 1234ABCooFAKEoKEYoofasdfsaf1234
+
+
+You will also need to make sure you have your wsgi.py is setup correctly. If you don't have it setup correctly then newrelic won't be able to gather data correctly. See these pages at NewRelic for more information. 
+
+- http://newrelic.com/docs/python/python-agent-and-uwsgi
+- http://newrelic.com/docs/python/integration-with-python-application
+
+Here is an example of my sample wsgi.py file with new relic installed::
+
+    #!/usr/bin/env python
+    
+    # This is just an example, replace this with your own wsgi.py file
+    
+    # because this is such a simple wsgi file I need to manually add the newrelic decorator to the WSGI application entry point. If
+    # you are using a real web framework this is most likely not needed.
+
+    import newrelic.agent
+
+    @newrelic.agent.wsgi_application()
+    def application(environ, start_response):
+        start_response('200 OK', [('Content-Type', 'text/plain')])
+        return ['Hello, world!\n']
