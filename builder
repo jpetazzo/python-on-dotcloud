@@ -39,8 +39,10 @@ install_newrelic() {
     newrelic_app_name = $DOTCLOUD_PROJECT"."$DOTCLOUD_SERVICE_NAME
     
     if test $SERVICE_NEWRELIC_LICENSE_KEY ; then
+       msg "You have entered your NewRelic license key, therefore you would like to use NewRelic. Adding it now.. "
+       
        # create the newrelic.ini file
-       msg "Build the newrelic.ini file and out in $HOME/current/newrelic.ini "
+       msg "Build the newrelic.ini file and put it in $HOME/current/newrelic.ini "
        
        sed > $HOME/current/newrelic.ini < $newrelic_config_template    \
         -e "s/@NEWRELIC_LICENSE_KEY@/${SERVICE_NEWRELIC_LICENSE_KEY}/g" \
@@ -159,5 +161,8 @@ install_application
 
 msg "Step 5: install application specific requirements::"
 install_requirements
+
+msg "Step 6: check if we need to install NewRelic::"
+install_newrelic
 
 msg "All done..."
