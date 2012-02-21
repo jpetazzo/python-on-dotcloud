@@ -43,7 +43,7 @@ You will also need to make sure you have your wsgi.py is setup correctly. If you
 - http://newrelic.com/docs/python/python-agent-and-uwsgi
 - http://newrelic.com/docs/python/integration-with-python-application
 
-Here is an example of my sample wsgi.py file with new relic installed::
+Here is an example of my sample wsgi.py file with NewRelic installed::
 
     #!/usr/bin/env python
     
