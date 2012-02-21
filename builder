@@ -2,13 +2,15 @@
 
 shopt -s extglob
 
+# variables needed later.
 start_dir=`pwd`
 nginx_install_dir="$HOME/nginx"
 nginx_stage_dir="$start_dir/tmp/stage"
 virtualenv_dir="$HOME/env"
 pip_install="$virtualenv_dir/bin/pip install"
+requirments_file = "$HOME/current/requirements.txt"
 
-
+# functions
 msg() {
     echo -e "\033[1;32m-->\033[0m $0:" $*
 }
@@ -19,58 +21,55 @@ die() {
 }
 
 move_to_approot() {
-    msg "moving to $SERVICE_APPROOT"
     [ -n "$SERVICE_APPROOT" ] && cd $SERVICE_APPROOT
 }
 
 create_virtualenv() {
     if [ ! -d $virtualenv_dir ] ; then
-        msg "building virtualenv: $virtualenv_dir"
+        msg "building virtualenv @ $virtualenv_dir"
         virtualenv $virtualenv_dir
     else
-        msg "virtualenv already exists: $virtualenv_dir"
+        msg "virtualenv already exists @ $virtualenv_dir , skipping install."
     fi
-    ls -al $virtualenv_dir
 }
 
 install_requirements(){
-    if [ -e "$HOME/current/requirements.txt" ]; then
-        msg "found requirements.txt file installing requirements"
-        $pip_install --download-cache=~/.pip-cache -r $HOME/current/requirements.txt
+    if [ -e "$requirments_file" ]; then
+        msg "found requirements.txt file installing requirements from $requirments_file"
+        $pip_install --download-cache=~/.pip-cache -r $requirments_file
     else
-        msg "no requirements to install"
+        msg "looked for requirements file at ($requirments_file) and didn't find one. skipping requirements install"
     fi
 }
 
 install_uwsgi() {
     msg "install uwsgi from pip:"
-     $pip_install uwsgi
+    $pip_install uwsgi
 }
 
 install_nginx() {
-    local nginx_url="http://nginx.org/download/nginx-1.0.12.tar.gz"
+    local nginx_url="http://nginx.org/download/nginx-1.0.12.tar.gz" #TODO parametrize? 
 
-    msg "Nginx install directory: $nginx_install_dir"
+    msg "installing Nginx into: $nginx_install_dir"
 
     # install nginx
     if [ ! -d $nginx_install_dir ] ; then
-        # just temp until I figure out what is wrong with build.
-        #rm -rf $nginx_install_dir
-        #rm -rf $nginx_stage_dir
-    #fi
+        msg "making directory: $nginx_install_dir "
         mkdir -p $nginx_install_dir
+        
+        msg "making directory: $nginx_stage_dir "
         mkdir -p $nginx_stage_dir
 
+        msg "downloading nginx from ($nginx_url) and untaring into ($nginx_stage_dir) "
         wget -O - $nginx_url | tar -C $nginx_stage_dir --strip-components=1 -zxf -
         [ $? -eq 0 ] || die "can't fetch nginx"
 
-        msg "Current directory listing"
-        ls 
+        msg "Successfully download and untarred nginx"
+        
         msg "move into $nginx_stage_dir "
         cd $nginx_stage_dir 
-        msg "$nginx_stage_dir listing"
-        ls $nginx_stage_dir
-        msg "now try to compile"
+        
+        msg "trying to compile nginx, and then install it"
         export CFLAGS="-O3 -pipe"
            ./configure   \
             --prefix=$nginx_install_dir \
@@ -85,67 +84,53 @@ install_nginx() {
             --with-http_xslt_module && make && make install
         [ $? -eq 0 ] || die "Nginx install failed"
         
-        ls -al $nginx_install_dir
+        msg "Successfully compiled and installed nginx"
+        
+        msg "remove some of the default config files from the nginx config directory that aren't needed"
         rm $nginx_install_dir/conf/*.default
+        
+        msg "cleaning up ($nginx_stage_dir) since it is not longer needed."
+        rm -rf $nginx_stage_dir
+        
+        msg "finished installing nginx."
     else
-        msg "Nginx already installed"
+        msg "Nginx already installed, skipping this step."
     fi
-    
-    #move_to_approot
-    #ls -al
-    #msg "ls of HOME: $HOME"
-    #ls -al $HOME
-    #msg "ls of app root : $SERVICE_APPROOT"
-    #ls -al $SERVICE_APPROOT
-    #msg "update nginx configuration file"
-    # update nginx configuration file
-    # XXX: PORT_WWW is missing in the environment at build time
-    # moved to postinstall script
-    #sed > $nginx_install_dir/conf/nginx.conf < $start_dir/nginx.conf.in    \
-    #    -e "s/@PORT_WWW@/${PORT_WWW:-42800}/g"
-    
-    msg "cleaning up $nginx_stage_dir"
-    rm -rf $nginx_stage_dir
-}
 
-install_supervisor_config(){
-    msg "supervisor.conf from $HOME before"
-    cat $HOME/supervisor.conf
-    msg "copy supervisor.conf from $start_dir to $HOME"
-    cp -f $start_dir/supervisor.conf $HOME
-    msg "supervisor.conf from $HOME after"
-    cat $HOME/supervisor.conf
 }
 
 install_application() {
     cat >> $start_dir/profile << EOF
 export PATH="$nginx_install_dir/sbin:$PATH"
 EOF
+    msg "moving $start_dir/profile to ~/"
     mv $start_dir/profile ~/
+    
+    msg "moving $start_dir/uwsgi.sh to ~/"
     mv $start_dir/uwsgi.sh ~/
 
-    # Use ~/code and ~/current like the regular Ruby service for better compatibility
+    # Use ~/code and ~/current like the regular python service for better compatibility
     msg "installing application to ~/current/ from $start_dir"
-    #pwd
-    #cd $start_dir
-    #ls -al
-    #pwd
-    msg "start rsyncing"
+
     rsync -avH --delete --exclude "data" * ~/current/
 }
 
-msg "Starting at $start_dir"
-msg "Move to app root"
+# lets get started.
+
+msg "Step 0: getting ready for build::"
 move_to_approot
-msg "create virtualenv"
+
+msg "Step 1: create virtualenv::"
 create_virtualenv
-msg "install uwsgi"
+
+msg "Step 2: install uwsgi::"
 install_uwsgi
-msg "install nginx"
-install_nginx # could be replaced by something else
-#msg "install supervisor config"
-#install_supervisor_config
-msg "install application"
-install_application
-msg "install requirements" #maybe move after create virtualenv
+
+msg "Step 3: install requirements::"
 install_requirements
+
+msg "Step 4: install nginx::"
+install_nginx
+
+msg "Step 5: install application::"
+install_application

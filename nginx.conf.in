@@ -1,3 +1,9 @@
+# template for nginx.conf file.
+# the file will be processed by the postinstall script
+# it will insert the correct value for PORT_WWW and then put this
+# file in /home/dotcloud/nginx/conf/nginx.conf when done.
+
+# nginx will be managed by supervisord when it starts so we don't need daemon mode
 daemon off;
 
 worker_processes    1;
@@ -19,6 +25,7 @@ http {
  gzip  on;
 
   server {
+    # PORT_WWW value is added via postinstall script.
     listen  @PORT_WWW@ default;
 
     server_name localhost;
