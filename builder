@@ -103,6 +103,9 @@ install_application() {
     cat >> $start_dir/profile << EOF
 export PATH="$nginx_install_dir/sbin:$PATH"
 EOF
+    msg "change directories to $start_dir"
+    cd $start_dir
+    
     msg "moving $start_dir/profile to ~/"
     mv $start_dir/profile ~/
     
