@@ -114,7 +114,7 @@ msg "Starting"
 msg "Move to app root"
 move_to_approot
 msg "create virtualenv"
-create_virtualenv()
+create_virtualenv
 msg "install uwsgi"
 install_uwsgi
 msg "install nginx"
