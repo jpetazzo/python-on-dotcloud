@@ -17,6 +17,7 @@ die() {
 }
 
 move_to_approot() {
+    msg "moving to $SERVICE_APPROOT"
     [ -n "$SERVICE_APPROOT" ] && cd $SERVICE_APPROOT
 }
 
@@ -87,7 +88,10 @@ install_nginx() {
     
     move_to_approot
     ls -al
+    msg "ls of HOME: $HOME"
     ls -al $HOME
+    msg "ls of app root : $SERVICE_APPROOT"
+    ls -al $SERVICE_APPROOT
     # update nginx configuration file
     # XXX: PORT_WWW is missing in the environment at build time
     sed > $nginx_install_dir/conf/nginx.conf < $HOME/nginx.conf.in    \
