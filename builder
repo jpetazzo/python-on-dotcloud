@@ -6,6 +6,7 @@ nginx_install_dir="$HOME/nginx"
 nginx_stage_dir="$HOME/stage"
 virtualenv_dir="$HOME/env"
 pip_install="$virtualenv_dir/bin/pip install"
+start_dir=`pwd`
 
 msg() {
     echo -e "\033[1;32m-->\033[0m $0:" $*
@@ -48,10 +49,10 @@ install_nginx() {
     msg "Nginx install directory: $nginx_install_dir"
 
     # install nginx
-    if [ ! -d $nginx_install_dir ] ; then
+    #if [ ! -d $nginx_install_dir ] ; then
         # just temp until I figure out what is wrong with build.
-     #   rm -rf $nginx_install_dir
-    #    rm -rf $nginx_stage_dir
+        rm -rf $nginx_install_dir
+        rm -rf $nginx_stage_dir
     #fi
         mkdir -p $nginx_install_dir
         mkdir -p $nginx_stage_dir
@@ -61,13 +62,13 @@ install_nginx() {
 
         msg "Current directory listing"
         ls 
-        #msg "move into $nginx_stage_dir "
-        #cd 
+        msg "move into $nginx_stage_dir "
+        cd $nginx_stage_dir 
         msg "$nginx_stage_dir listing"
         ls $nginx_stage_dir
         msg "now try to compile"
         export CFLAGS="-O3 -pipe"
-           $nginx_stage_dir/configure   \
+           ./configure   \
             --prefix=$nginx_install_dir \
             --with-http_addition_module \
             --with-http_dav_module \
@@ -82,9 +83,9 @@ install_nginx() {
         
         ls -al $nginx_install_dir
         rm $nginx_install_dir/conf/*.default
-    else
-        msg "Nginx already installed"
-    fi
+    #else
+    #    msg "Nginx already installed"
+    #fi
     
     #move_to_approot
     ls -al
@@ -95,7 +96,7 @@ install_nginx() {
     msg "update nginx configuration file"
     # update nginx configuration file
     # XXX: PORT_WWW is missing in the environment at build time
-    sed > $nginx_install_dir/conf/nginx.conf < nginx.conf.in    \
+    sed > $nginx_install_dir/conf/nginx.conf < $start_dir/nginx.conf.in    \
         -e "s/@PORT_WWW@/${PORT_WWW:-42800}/g"
     
     msg "cleaning up $nginx_stage_dir"
@@ -114,7 +115,7 @@ EOF
     rsync -avH --delete --exclude "data" * ~/current/
 }
 
-msg "Starting"
+msg "Starting at $start_dir"
 msg "Move to app root"
 move_to_approot
 msg "create virtualenv"
