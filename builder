@@ -105,9 +105,12 @@ install_nginx() {
 }
 
 install_supervisor_config(){
-    cd $start_dir
+    msg "supervisor.conf from $HOME before"
+    cat $HOME/supervisor.conf
     msg "copy supervisor.conf from $start_dir to $HOME"
-    cp -f supervisor.conf $HOME
+    cp -f $start_dir/supervisor.conf $HOME
+    msg "supervisor.conf from $HOME after"
+    cat $HOME/supervisor.conf
 }
 
 install_application() {
