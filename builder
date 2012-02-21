@@ -45,9 +45,11 @@ EOF
 install_newrelic() {
 
     if test "$SERVICE_CONFIG_NEWRELIC_APP_NAME" ; then
+        msg "app_name is declared using that value ($SERVICE_CONFIG_NEWRELIC_APP_NAME) "
         newrelic_app_name=$SERVICE_CONFIG_NEWRELIC_APP_NAME
     else
         newrelic_app_name="Custom Python Application on dotCloud"
+        msg "app_name is not declared using the default value ($newrelic_app_name) "
     fi
 
     if test "$SERVICE_CONFIG_NEWRELIC_LICENSE_KEY" ; then
@@ -55,10 +57,10 @@ install_newrelic() {
        
        msg "Make sure $HOME/current is there, if not create it. "
        mkdir -p $HOME/current
-       
+
        # create the newrelic.ini file
        msg "Build the newrelic.ini file and put it in $HOME/current/newrelic.ini "
-       
+
        sed > $HOME/current/newrelic.ini < $newrelic_config_template    \
         -e "s/@NEWRELIC_LICENSE_KEY@/${SERVICE_CONFIG_NEWRELIC_LICENSE_KEY}/g" \
         -e "s/@NEWRELIC_APP_NAME@/${newrelic_app_name}/g"
@@ -110,7 +112,7 @@ install_nginx() {
         
         msg "move into $nginx_stage_dir "
         cd $nginx_stage_dir 
-        
+
         msg "trying to compile nginx, and then install it"
         export CFLAGS="-O3 -pipe"
            ./configure   \
@@ -125,20 +127,19 @@ install_nginx() {
             --with-http_sub_module \
             --with-http_xslt_module && make && make install
         [ $? -eq 0 ] || die "Nginx install failed"
-        
+
         msg "Successfully compiled and installed nginx"
-        
+
         msg "remove some of the default config files from the nginx config directory that aren't needed"
         rm $nginx_install_dir/conf/*.default
-        
+
         msg "cleaning up ($stage_dir) since it is no longer needed."
         rm -rf $stage_dir
-        
+
         msg "finished installing nginx."
     else
         msg "Nginx already installed, skipping this step."
     fi
-
 }
 
 build_profile(){
@@ -152,16 +153,15 @@ install_application() {
 
     msg "change directories to $start_dir"
     cd $start_dir
-    
+
     msg "moving $start_dir/profile to ~/"
     mv $start_dir/profile ~/
-    
+
     msg "moving $start_dir/uwsgi.sh to ~/"
     mv $start_dir/uwsgi.sh ~/
 
     # Use ~/code and ~/current like the regular python service for better compatibility
     msg "installing application to ~/current/ from $start_dir"
-
     rsync -avH --delete --exclude "data" * ~/current/
 }
 
