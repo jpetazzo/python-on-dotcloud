@@ -43,6 +43,9 @@ EOF
 }
 
 install_newrelic() {
+    echo "---------------------------------"
+    env
+    echo "---------------------------------"
     newrelic_app_name=$DOTCLOUD_PROJECT"."$DOTCLOUD_SERVICE_NAME
 
     if test $SERVICE_CONFIG_NEWRELIC_LICENSE_KEY ; then
