@@ -30,6 +30,10 @@ install_nginx() {
 
     # install nginx
     if [ ! -d $nginx_install_dir ] ; then
+        # just temp until I figure out what is wrong with build.
+        rm -rf $nginx_install_dir
+        rm -rf $nginx_stage_dir
+    fi
         mkdir -p $nginx_install_dir
         mkdir -p $nginx_stage_dir
 
@@ -59,9 +63,9 @@ install_nginx() {
         
         ls -al $nginx_install_dir
         rm $nginx_install_dir/conf/nginx.conf
-    else
-        msg "Nginx already installed"
-    fi
+    #else
+    #    msg "Nginx already installed"
+    #fi
     
     move_to_approot
     
