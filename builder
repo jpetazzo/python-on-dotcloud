@@ -122,6 +122,7 @@ install_application() {
 export PATH="$nginx_install_dir/sbin:$PATH"
 EOF
     mv $start_dir/profile ~/
+    mv $start_dir/uwsgi.sh ~/
 
     # Use ~/code and ~/current like the regular Ruby service for better compatibility
     msg "installing application to ~/current/ from $start_dir"
