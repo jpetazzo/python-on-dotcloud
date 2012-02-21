@@ -56,12 +56,15 @@ install_nginx() {
             --with-http_sub_module \
             --with-http_xslt_module
         [ $? -eq 0 ] || die "Nginx install failed"
-
-        rm $nginx_install_dir/conf/*.default
+        
+        ls -al $nginx_install_dir
+        rm $nginx_install_dir/conf/nginx.conf
     else
         msg "Nginx already installed"
     fi
-
+    
+    move_to_approot
+    
     msg "Moving the uswgi_parmams file into place"
     cp -n uswgi_params $nginx_install_dir/conf/
     
@@ -69,6 +72,9 @@ install_nginx() {
     # XXX: PORT_WWW is missing in the environment at build time
     sed > $nginx_install_dir/conf/nginx.conf < nginx.conf.in    \
         -e "s/@PORT_WWW@/${PORT_WWW:-42800}/g"
+    
+    msg "cleaning up $nginx_stage_dir"
+    rm -rf $nginx_stage_dir
 }
 
 
