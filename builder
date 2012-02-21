@@ -5,7 +5,8 @@ shopt -s extglob
 # variables needed later.
 start_dir=`pwd`
 nginx_install_dir="$HOME/nginx"
-nginx_stage_dir="$start_dir/tmp/stage"
+stage_dir="$start_dir/tmp"
+nginx_stage_dir="$stage_dir/stage"
 virtualenv_dir="$HOME/env"
 pip_install="$virtualenv_dir/bin/pip install"
 requirments_file="$HOME/current/requirements.txt"
@@ -89,8 +90,8 @@ install_nginx() {
         msg "remove some of the default config files from the nginx config directory that aren't needed"
         rm $nginx_install_dir/conf/*.default
         
-        msg "cleaning up ($nginx_stage_dir) since it is not longer needed."
-        rm -rf $nginx_stage_dir
+        msg "cleaning up ($stage_dir) since it is no longer needed."
+        rm -rf $stage_dir
         
         msg "finished installing nginx."
     else
