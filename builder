@@ -34,7 +34,7 @@ create_virtualenv() {
 }
 
 install_requirements(){
-    if [-f $HOME/current/requirements.txt ]; then
+    if [ -e "$HOME/current/requirements.txt" ]; then
         msg "found requirements.txt file installing requirements"
         $pip_install --download-cache=~/.pip-cache -r $HOME/current/requirements.txt
     else
