@@ -43,8 +43,8 @@ EOF
 }
 
 install_newrelic() {
-    newrelic_app_name = $DOTCLOUD_PROJECT"."$DOTCLOUD_SERVICE_NAME
-    
+    newrelic_app_name=$DOTCLOUD_PROJECT"."$DOTCLOUD_SERVICE_NAME
+
     if test $SERVICE_CONFIG_NEWRELIC_LICENSE_KEY ; then
        msg "You have entered your NewRelic license key, therefore you would like to use NewRelic. Adding it now.. "
        
