@@ -53,6 +53,9 @@ install_newrelic() {
     if test "$SERVICE_CONFIG_NEWRELIC_LICENSE_KEY" ; then
        msg "You have entered your NewRelic license key, therefore you would like to use NewRelic. Adding it now.. "
        
+       msg "Make sure $HOME/current is there, if not create it. "
+       mkdir $HOME/current
+       
        # create the newrelic.ini file
        msg "Build the newrelic.ini file and put it in $HOME/current/newrelic.ini "
        
