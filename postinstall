@@ -4,7 +4,8 @@
 # this will take the nginx.conf.in template and replace the PORT_WWW variable with
 # the PORT_WWW env variable.
 nginx_config_template="/home/dotcloud/current/nginx.conf.in"
-if [-e $nginx_config_template]; then
+
+if [ -e "$nginx_config_template" ]; then
    sed > $HOME/nginx/conf/nginx.conf < $nginx_config_template    \
     -e "s/@PORT_WWW@/${PORT_WWW:-42800}/g"
 else
