@@ -10,6 +10,7 @@ nginx_stage_dir="$stage_dir/stage"
 virtualenv_dir="$HOME/env"
 pip_install="$virtualenv_dir/bin/pip install"
 requirments_file="$HOME/current/requirements.txt"
+newrelic_config_template="$stage_dir/newrelic.ini.in"
 
 # functions
 msg() {
@@ -31,6 +32,26 @@ create_virtualenv() {
         virtualenv $virtualenv_dir
     else
         msg "virtualenv already exists @ $virtualenv_dir , skipping install."
+    fi
+}
+
+install_newrelic() {
+    newrelic_app_name = $DOTCLOUD_PROJECT"."$DOTCLOUD_SERVICE_NAME
+    
+    if test $SERVICE_NEWRELIC_LICENSE_KEY ; then
+       # create the newrelic.ini file
+       msg "Build the newrelic.ini file and out in $HOME/current/newrelic.ini "
+       
+       sed > $HOME/current/newrelic.ini < $newrelic_config_template    \
+        -e "s/@NEWRELIC_LICENSE_KEY@/${SERVICE_NEWRELIC_LICENSE_KEY}/g" \
+        -e "s/@NEWRELIC_APP_NAME@/${newrelic_app_name}/g"
+
+       # install newrelic agent
+       msg "install newrelic from pip:"
+       $pip_install newrelic
+
+    else
+       msg "New Relic isn't enabled skipping this step."
     fi
 }
 

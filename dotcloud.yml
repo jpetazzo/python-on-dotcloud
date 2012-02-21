@@ -9,3 +9,7 @@ python:
     processes:
         nginx: nginx
         uwsgi: ~/uwsgi.sh
+    config:
+            # This is only needed if you want to enable new relic support
+            # add your license key. Comment it out if you want it disabled.
+        newrelic_license_key: 1234ABCooFAKEoKEYoofasdfsaf1234
