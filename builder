@@ -43,7 +43,7 @@ EOF
 }
 
 install_newrelic() {
-
+    
     if test "$SERVICE_CONFIG_NEWRELIC_APP_NAME" ; then
         msg "app_name is declared using that value ($SERVICE_CONFIG_NEWRELIC_APP_NAME) "
         newrelic_app_name=$SERVICE_CONFIG_NEWRELIC_APP_NAME
@@ -135,6 +135,9 @@ install_nginx() {
 
         msg "cleaning up ($stage_dir) since it is no longer needed."
         rm -rf $stage_dir
+
+        msg "change directories back to $start_dir"
+        cd $start_dir
 
         msg "finished installing nginx."
     else
