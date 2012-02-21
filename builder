@@ -34,8 +34,8 @@ create_virtualenv() {
 }
 
 install_requirements(){
-    if [-f requirements.txt ]; then
-        $pip_install --download-cache=~/.pip-cache -r requirements.txt
+    if [-f $HOME/current/requirements.txt ]; then
+        $pip_install --download-cache=~/.pip-cache -r $HOME/current/requirements.txt
     fi
 }
 
@@ -104,6 +104,11 @@ install_nginx() {
     rm -rf $nginx_stage_dir
 }
 
+install_supervisor_config(){
+    cd $start_dir
+    msg "copy supervisor.conf from $start_dir to $HOME"
+    cp -f supervisor.conf $HOME
+}
 
 install_application() {
     cat >> $start_dir/profile << EOF
@@ -130,5 +135,9 @@ msg "install uwsgi"
 install_uwsgi
 msg "install nginx"
 install_nginx # could be replaced by something else
+msg "install supervisor config"
+install_supervisor_config
 msg "install application"
 install_application
+msg "install requirements" #maybe move after create virtualenv
+install_requirements
