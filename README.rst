@@ -16,7 +16,7 @@ If the generic python service doesn't do what you need, you can use this service
 
 NewRelic
 --------
-If you would like to use NewRelic to monitor your python application all you need to do is add an environment variable with your new_relic license key, and this build script will do the rest.
+If you would like to use NewRelic to monitor your python application all you need to do is add an environment variable with your new_relic license key and application name, and this build script will do the rest.
 
 Here is an example of a dotcloud.yml with NewRelic turned on::
 
@@ -33,8 +33,9 @@ Here is an example of a dotcloud.yml with NewRelic turned on::
             uwsgi: ~/uwsgi.sh
         config:
                 # This is only needed if you want to enable new relic support
-                # add your license key. Comment it out, or remove all together if you want it disabled.
+                # add your license key and app name. Comment it out, or remove all together if you want it disabled.
             newrelic_license_key: 1234ABCooFAKEoKEYoofasdfsaf1234
+            newrelic_app_name: Custom Python application on dotCloud 
 
 
 You will also need to make sure you have your wsgi.py is setup correctly. If you don't have it setup correctly then newrelic won't be able to gather data correctly. See these pages at NewRelic for more information. 
