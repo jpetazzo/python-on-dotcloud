@@ -4,6 +4,8 @@ shopt -s extglob
 
 nginx_install_dir="$HOME/nginx"
 nginx_stage_dir="$HOME/stage"
+virtualenv_dir="$HOME/env"
+pip_install="$virtualenv_dir/bin/pip install"
 
 msg() {
     echo -e "\033[1;32m-->\033[0m $0:" $*
@@ -18,9 +20,24 @@ move_to_approot() {
     [ -n "$SERVICE_APPROOT" ] && cd $SERVICE_APPROOT
 }
 
+create_virtualenv() {
+    if [ ! -d $virtualenv_dir ] ; then
+        msg "building virtualenv: $virtualenv_dir"
+        virtualenv env
+    else
+        msg "virtualenv already exists: $virtualenv_dir"
+    fi
+}
+
+install_requirements(){
+    if [-f requirements.txt ]; then
+        pip_install --download-cache=~/.pip-cache -r requirements.txt
+    fi
+}
+
 install_uwsgi() {
     msg "install uwsgi from pip:"
-    /home/dotcloud/env/bin/pip install uwsgi
+     pip_install uwsgi
 }
 
 install_nginx() {
@@ -58,7 +75,7 @@ install_nginx() {
             --with-http_stub_status_module \
             --with-http_ssl_module \
             --with-http_sub_module \
-            --with-http_xslt_module
+            --with-http_xslt_module && make && make install
         [ $? -eq 0 ] || die "Nginx install failed"
         
         ls -al $nginx_install_dir
@@ -96,6 +113,8 @@ EOF
 msg "Starting"
 msg "Move to app root"
 move_to_approot
+msg "create virtualenv"
+create_virtualenv()
 msg "install uwsgi"
 install_uwsgi
 msg "install nginx"
