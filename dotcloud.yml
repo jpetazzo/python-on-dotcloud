@@ -4,5 +4,7 @@ python:
     systempackages:
         # needed for the Nginx rewrite module
         - libpcre3-dev
+    ports:
+        www: http
     processes:
         nginx: nginx

@@ -111,7 +111,7 @@ EOF
 
     # Use ~/code and ~/current like the regular Ruby service for better compatibility
     msg "installing application to ~/current/"
-    rsync -aH --delete --exclude "data" * ~/current/
+    rsync -avH --delete --exclude "data" * ~/current/
 }
 
 msg "Starting"
