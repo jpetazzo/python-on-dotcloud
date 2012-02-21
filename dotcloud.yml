@@ -1,4 +1,4 @@
-www:
+python:
     type: custom
     buildscript: builder
     systempackages:
