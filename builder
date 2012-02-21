@@ -60,7 +60,7 @@ install_newrelic() {
        $pip_install newrelic
        
        msg "add newrelic info to the profile"
-       add_newrelic_to_profile()
+       add_newrelic_to_profile
 
     else
        msg "New Relic isn't enabled skipping this step."
