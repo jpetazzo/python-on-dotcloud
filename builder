@@ -23,21 +23,22 @@ move_to_approot() {
 create_virtualenv() {
     if [ ! -d $virtualenv_dir ] ; then
         msg "building virtualenv: $virtualenv_dir"
-        virtualenv env
+        virtualenv $virtualenv_dir
     else
         msg "virtualenv already exists: $virtualenv_dir"
     fi
+    ls -al $virtualenv_dir
 }
 
 install_requirements(){
     if [-f requirements.txt ]; then
-        pip_install --download-cache=~/.pip-cache -r requirements.txt
+        $pip_install --download-cache=~/.pip-cache -r requirements.txt
     fi
 }
 
 install_uwsgi() {
     msg "install uwsgi from pip:"
-     pip_install uwsgi
+     $pip_install uwsgi
 }
 
 install_nginx() {
@@ -79,19 +80,17 @@ install_nginx() {
         [ $? -eq 0 ] || die "Nginx install failed"
         
         ls -al $nginx_install_dir
-        rm $nginx_install_dir/conf/nginx.conf
+        rm $nginx_install_dir/conf/*.default
     #else
     #    msg "Nginx already installed"
     #fi
     
     move_to_approot
-    
-    msg "Moving the uswgi_parmams file into place"
-    cp -n uswgi_params $nginx_install_dir/conf/
-    
+    ls -al
+    ls -al $HOME
     # update nginx configuration file
     # XXX: PORT_WWW is missing in the environment at build time
-    sed > $nginx_install_dir/conf/nginx.conf < nginx.conf.in    \
+    sed > $nginx_install_dir/conf/nginx.conf < $HOME/nginx.conf.in    \
         -e "s/@PORT_WWW@/${PORT_WWW:-42800}/g"
     
     msg "cleaning up $nginx_stage_dir"
