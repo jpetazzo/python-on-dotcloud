@@ -92,12 +92,12 @@ install_nginx() {
     fi
     
     #move_to_approot
-    ls -al
-    msg "ls of HOME: $HOME"
-    ls -al $HOME
-    msg "ls of app root : $SERVICE_APPROOT"
-    ls -al $SERVICE_APPROOT
-    msg "update nginx configuration file"
+    #ls -al
+    #msg "ls of HOME: $HOME"
+    #ls -al $HOME
+    #msg "ls of app root : $SERVICE_APPROOT"
+    #ls -al $SERVICE_APPROOT
+    #msg "update nginx configuration file"
     # update nginx configuration file
     # XXX: PORT_WWW is missing in the environment at build time
     # moved to postinstall script
