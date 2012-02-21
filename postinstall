@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# PORT_WWW isn't available at build time so we need to put it in postinstall
+sed > "$HOME/nginx/conf/nginx.conf < /home/dotcloud/current/nginx.conf.in    \
+    -e "s/@PORT_WWW@/${PORT_WWW:-42800}/g"

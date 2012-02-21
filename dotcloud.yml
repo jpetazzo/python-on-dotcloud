@@ -8,3 +8,4 @@ python:
         www: http
     processes:
         nginx: nginx
+        uwsgi: uwsgi.sh

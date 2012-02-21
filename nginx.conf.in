@@ -19,7 +19,7 @@ http {
  gzip  on;
 
   server {
-    listen   8080 default;
+    listen  @PORT_WWW@ default;
 
     server_name localhost;
 

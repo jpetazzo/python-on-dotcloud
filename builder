@@ -35,7 +35,10 @@ create_virtualenv() {
 
 install_requirements(){
     if [-f $HOME/current/requirements.txt ]; then
+        msg "found requirements.txt file installing requirements"
         $pip_install --download-cache=~/.pip-cache -r $HOME/current/requirements.txt
+    else
+        msg "no requirements to install"
     fi
 }
 
@@ -97,8 +100,9 @@ install_nginx() {
     msg "update nginx configuration file"
     # update nginx configuration file
     # XXX: PORT_WWW is missing in the environment at build time
-    sed > $nginx_install_dir/conf/nginx.conf < $start_dir/nginx.conf.in    \
-        -e "s/@PORT_WWW@/${PORT_WWW:-42800}/g"
+    # moved to postinstall script
+    #sed > $nginx_install_dir/conf/nginx.conf < $start_dir/nginx.conf.in    \
+    #    -e "s/@PORT_WWW@/${PORT_WWW:-42800}/g"
     
     msg "cleaning up $nginx_stage_dir"
     rm -rf $nginx_stage_dir
@@ -121,10 +125,10 @@ EOF
 
     # Use ~/code and ~/current like the regular Ruby service for better compatibility
     msg "installing application to ~/current/ from $start_dir"
-    pwd
-    cd $start_dir
-    ls -al
-    pwd
+    #pwd
+    #cd $start_dir
+    #ls -al
+    #pwd
     msg "start rsyncing"
     rsync -avH --delete --exclude "data" * ~/current/
 }
@@ -138,8 +142,8 @@ msg "install uwsgi"
 install_uwsgi
 msg "install nginx"
 install_nginx # could be replaced by something else
-msg "install supervisor config"
-install_supervisor_config
+#msg "install supervisor config"
+#install_supervisor_config
 msg "install application"
 install_application
 msg "install requirements" #maybe move after create virtualenv
