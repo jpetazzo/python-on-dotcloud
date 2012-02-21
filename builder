@@ -129,13 +129,13 @@ create_virtualenv
 msg "Step 2: install uwsgi::"
 install_uwsgi
 
-msg "Step 3: install requirements::"
-install_requirements
-
-msg "Step 4: install nginx::"
+msg "Step 3: install nginx::"
 install_nginx
 
-msg "Step 5: install application::"
+msg "Step 4: install application::"
 install_application
+
+msg "Step 5: install application specific requirements::"
+install_requirements
 
 msg "All done..."
