@@ -10,7 +10,7 @@ nginx_stage_dir="$stage_dir/stage"
 virtualenv_dir="$HOME/env"
 pip_install="$virtualenv_dir/bin/pip install"
 requirments_file="$HOME/current/requirements.txt"
-newrelic_config_template="$stage_dir/newrelic.ini.in"
+newrelic_config_template="$start_dir/newrelic.ini.in"
 
 # functions
 msg() {
@@ -37,7 +37,7 @@ create_virtualenv() {
 
 add_newrelic_to_profile(){
    cat >> $start_dir/profile << EOF
-   export PLUGIN_NEWRELIC_ENABLED=true
+export PLUGIN_NEWRELIC_ENABLED=true
 EOF
 
 }
@@ -135,7 +135,7 @@ install_nginx() {
 
 build_profile(){
     cat > $start_dir/profile << EOF
-    export PATH="$nginx_install_dir/sbin:$PATH"
+export PATH="$nginx_install_dir/sbin:$PATH"
 EOF
 
 }
