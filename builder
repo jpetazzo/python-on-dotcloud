@@ -54,7 +54,7 @@ install_newrelic() {
        msg "You have entered your NewRelic license key, therefore you would like to use NewRelic. Adding it now.. "
        
        msg "Make sure $HOME/current is there, if not create it. "
-       mkdir $HOME/current
+       mkdir -p $HOME/current
        
        # create the newrelic.ini file
        msg "Build the newrelic.ini file and put it in $HOME/current/newrelic.ini "
