@@ -113,7 +113,12 @@ EOF
 
     # Use ~/code and ~/current like the regular Ruby service for better compatibility
     msg "installing application to ~/current/ from $start_dir"
-    rsync -avH --delete --exclude "data" $start_dir/* ~/current/
+    pwd
+    cd $start_dir
+    ls -al
+    pwd
+    msg "start rsyncing"
+    rsync -avH --delete --exclude "data" * ~/current/
 }
 
 msg "Starting at $start_dir"
