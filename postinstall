@@ -3,7 +3,7 @@
 # PORT_WWW isn't available at build time so we need to put it in postinstall
 # this will take the nginx.conf.in template and replace the PORT_WWW variable with
 # the PORT_WWW env variable.
-nginx_config_template= "/home/dotcloud/current/nginx.conf.in"
+nginx_config_template="/home/dotcloud/current/nginx.conf.in"
 if [-e $nginx_config_template]; then
    sed > $HOME/nginx/conf/nginx.conf < $nginx_config_template    \
     -e "s/@PORT_WWW@/${PORT_WWW:-42800}/g"
