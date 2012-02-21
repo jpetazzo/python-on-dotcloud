@@ -92,6 +92,7 @@ install_nginx() {
     ls -al $HOME
     msg "ls of app root : $SERVICE_APPROOT"
     ls -al $SERVICE_APPROOT
+    msg "update nginx configuration file"
     # update nginx configuration file
     # XXX: PORT_WWW is missing in the environment at build time
     sed > $nginx_install_dir/conf/nginx.conf < nginx.conf.in    \
@@ -122,5 +123,5 @@ msg "install uwsgi"
 install_uwsgi
 msg "install nginx"
 install_nginx # could be replaced by something else
-#msg "install application"
-#install_application
+msg "install application"
+install_application
