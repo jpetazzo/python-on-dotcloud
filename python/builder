@@ -9,11 +9,14 @@ start_dir=`pwd`
 nginx_install_dir="$HOME/nginx"
 stage_dir="$start_dir/tmp"
 nginx_stage_dir="$stage_dir/stage"
+virtualenv_stage_dir="$stage_dir/venv"
 virtualenv_dir="$HOME/env"
 pip_install="$virtualenv_dir/bin/pip install"
 requirments_file="$HOME/current/requirements.txt"
 newrelic_config_template="$BUILDERDIR/newrelic.ini.in"
 python_bin="/usr/bin/python2.6"
+virtualenv_download_url="https://raw.github.com/pypa/virtualenv/master/virtualenv.py" #store locally? safer then downloading all the time?
+nginx_download_url="http://nginx.org/download/nginx-1.0.12.tar.gz"  #TODO configurable?
 
 # functions
 msg() {
@@ -62,16 +65,18 @@ find_python_version() {
     fi
 }
 
-#upgrade_virtualenv_pip(){
-#    
-#}
-
 create_virtualenv() {
     if [ ! -d $virtualenv_dir ] ; then
+        
+        # can't use built in version of virtualenv, it doesn't support python3
+        msg "downloading virtualenv from ($virtualenv_download_url) and saving it as ($virtualenv_stage_dir/virtualenv.py)"
+        curl -o $virtualenv_stage_dir/virtualenv.py $virtualenv_download_url
+        
         msg "building virtualenv @ $virtualenv_dir"
         find_python_version
+        
         msg "creating virtualenv @ $virtualenv_dir with python_version = $python_bin"
-        virtualenv --python=$python_bin --distribute $virtualenv_dir
+        $python_bin $virtualenv_stage_dir/virtualenv.py --distribute $virtualenv_dir
     else
         msg "virtualenv already exists @ $virtualenv_dir , skipping install."
     fi
@@ -134,7 +139,7 @@ install_uwsgi() {
 }
 
 install_nginx() {
-    local nginx_url="http://nginx.org/download/nginx-1.0.12.tar.gz" #TODO parametrize? 
+    local nginx_url=$nginx_download_url
 
     msg "installing Nginx into: $nginx_install_dir"
 
