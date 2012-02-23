@@ -51,6 +51,8 @@ NewRelic
 --------
 If you would like to use NewRelic to monitor your python application all you need to do is add an environment variable with your new_relic license key and application name, and this build script will do the rest.
 
+NewRelic only works with python 2.6 and 2.7. It will not work correctly with python 3.1 or 3.2. If you set your python version to 3.1 or 3.2 NewRelic will automatically be disabled.
+
 Here is an example of a dotcloud.yml with NewRelic turned on::
 
     python:

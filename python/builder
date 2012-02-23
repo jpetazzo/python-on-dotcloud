@@ -17,6 +17,7 @@ newrelic_config_template="$BUILDERDIR/newrelic.ini.in"
 python_bin="/usr/bin/python2.6"
 virtualenv_download_url="https://raw.github.com/pypa/virtualenv/master/virtualenv.py" #store locally? safer then downloading all the time?
 nginx_download_url="http://nginx.org/download/nginx-1.0.12.tar.gz"  #TODO configurable?
+newrelic_allowed="yes" #boolean instead?
 
 # functions
 msg() {
@@ -49,10 +50,14 @@ find_python_version() {
         "3.1")
             msg "Setting python version to 3.1 "
             python_bin="/usr/bin/python3.1"
+            # disable newrelic since it doesn't work with this version of python.
+            newrelic_allowed="no"
             ;;
         "3.2")
             msg "Setting python version to 3.2 "
             python_bin="/usr/bin/python3.2"
+            # disable newrelic since it doesn't work with this version of python.
+            newrelic_allowed="no"
             ;;
         *)
             msg "Trying to set python version to $SERVICE_CONFIG_PYTHON_VERSION, and it isn't valid."
@@ -95,36 +100,44 @@ EOF
 
 install_newrelic() {
     
-    if test "$SERVICE_CONFIG_NEWRELIC_APP_NAME" ; then
-        msg "app_name is declared using that value ($SERVICE_CONFIG_NEWRELIC_APP_NAME) "
-        newrelic_app_name=$SERVICE_CONFIG_NEWRELIC_APP_NAME
-    else
-        newrelic_app_name="Custom Python Application on dotCloud"
-        msg "app_name is not declared using the default value ($newrelic_app_name) "
-    fi
+    if [$newrelic_allowed == "yes"]; then
+        msg "NewRelic is allowed"
+        
+        if test "$SERVICE_CONFIG_NEWRELIC_APP_NAME" ; then
+            msg "app_name is declared using that value ($SERVICE_CONFIG_NEWRELIC_APP_NAME) "
+            newrelic_app_name=$SERVICE_CONFIG_NEWRELIC_APP_NAME
+        else
+            newrelic_app_name="Custom Python Application on dotCloud"
+            msg "app_name is not declared using the default value ($newrelic_app_name) "
+        fi
 
-    if test "$SERVICE_CONFIG_NEWRELIC_LICENSE_KEY" ; then
-       msg "You have entered your NewRelic license key, therefore you would like to use NewRelic. Adding it now.. "
+        if test "$SERVICE_CONFIG_NEWRELIC_LICENSE_KEY" ; then
+           msg "You have entered your NewRelic license key, therefore you would like to use NewRelic. Adding it now.. "
        
-       msg "Make sure $HOME/current is there, if not create it. "
-       mkdir -p $HOME/current
+           msg "Make sure $HOME/current is there, if not create it. "
+           mkdir -p $HOME/current
 
-       # create the newrelic.ini file
-       msg "Build the newrelic.ini file and put it in $HOME/current/newrelic.ini "
+           # create the newrelic.ini file
+           msg "Build the newrelic.ini file and put it in $HOME/current/newrelic.ini "
 
-       sed > $HOME/current/newrelic.ini < $newrelic_config_template    \
-        -e "s/@NEWRELIC_LICENSE_KEY@/${SERVICE_CONFIG_NEWRELIC_LICENSE_KEY}/g" \
-        -e "s/@NEWRELIC_APP_NAME@/${newrelic_app_name}/g"
+           sed > $HOME/current/newrelic.ini < $newrelic_config_template    \
+            -e "s/@NEWRELIC_LICENSE_KEY@/${SERVICE_CONFIG_NEWRELIC_LICENSE_KEY}/g" \
+            -e "s/@NEWRELIC_APP_NAME@/${newrelic_app_name}/g"
 
-       # install newrelic agent
-       msg "install newrelic from pip:"
-       $pip_install newrelic
+           # install newrelic agent
+           msg "install newrelic from pip:"
+           $pip_install newrelic
        
-       msg "add newrelic info to the profile"
-       add_newrelic_to_profile
+           msg "add newrelic info to the profile"
+           add_newrelic_to_profile
 
+        else
+           msg "New Relic isn't enabled skipping this step."
+        fi
     else
-       msg "New Relic isn't enabled skipping this step."
+        msg "NewRelic Disabled!"
+        msg "NewRelic is not allowed because you are using an incompatible version of python."
+        msg "Please change to python 2.6 or 2.7 if you want to use NewRelic."
     fi
 }
 
@@ -216,7 +229,7 @@ install_application() {
 
     # Use ~/code and ~/current like the regular python service for better compatibility
     msg "installing application to ~/current/ from $start_dir"
-    rsync -avH --delete --exclude "data" * ~/current/
+    rsync -avH --delete --exclude "data" --exclude "README.rst" * ~/current/
 }
 
 # lets get started.
