@@ -62,12 +62,16 @@ find_python_version() {
     fi
 }
 
+#upgrade_virtualenv_pip(){
+#    
+#}
+
 create_virtualenv() {
     if [ ! -d $virtualenv_dir ] ; then
         msg "building virtualenv @ $virtualenv_dir"
         find_python_version
         msg "creating virtualenv @ $virtualenv_dir with python_version = $python_bin"
-        virtualenv --python=$python_bin $virtualenv_dir
+        virtualenv --python=$python_bin --distribute $virtualenv_dir
     else
         msg "virtualenv already exists @ $virtualenv_dir , skipping install."
     fi
