@@ -67,12 +67,16 @@ find_python_version() {
 
 create_virtualenv() {
     if [ ! -d $virtualenv_dir ] ; then
+        msg "building virtualenv @ $virtualenv_dir"
+        
+        msg "Make sure $virtualenv_stage_dir exists and if not create it."
+        mkdir -p $virtualenv_stage_dir
         
         # can't use built in version of virtualenv, it doesn't support python3
         msg "downloading virtualenv from ($virtualenv_download_url) and saving it as ($virtualenv_stage_dir/virtualenv.py)"
         curl -o $virtualenv_stage_dir/virtualenv.py $virtualenv_download_url
         
-        msg "building virtualenv @ $virtualenv_dir"
+        # find out what python version we need to use. value will be in python_bin
         find_python_version
         
         msg "creating virtualenv @ $virtualenv_dir with python_version = $python_bin"
