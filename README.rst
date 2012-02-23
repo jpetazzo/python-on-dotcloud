@@ -13,6 +13,39 @@ Why use this service
 --------------------
 If the generic python service doesn't do what you need, you can use this service to customize the python service to do what you need. The most requested feature is the ability to change the uwsgi configuration. If you want to do that you just need to change the uwsgi.sh file.
 
+Python Version
+--------------
+This custom service supports 4 different branches of python (2.6, 2.7, 3.1, 3.2), it will default to python 2.6 unless you specify otherwise. The current versions of each python branch are listed in the table below. Pick the branch that works best for you.
+
++--------+---------+
+| branch | version |
++========+=========+
+| 2.6*   | 2.6.5   |
++--------+---------+
+| 2.7    | 2.7.2   |
++--------+---------+
+| 3.1    | 3.1.2   |
++--------+---------+
+| 3.2    | 3.2.2   |
++--------+---------+
+
+\* python 2.6 is the default
+
+Here is an example of the dotcloud.yml file for setting the python version to 3.2::
+
+    python:
+        type: custom
+        buildscript: builder
+        systempackages:
+            # needed for the Nginx rewrite module
+            - libpcre3-dev
+        ports:
+            www: http
+        processes:
+            nginx: nginx
+            uwsgi: ~/uwsgi.sh
+        config:
+            python_version: 3.2
 
 NewRelic
 --------
@@ -35,7 +68,7 @@ Here is an example of a dotcloud.yml with NewRelic turned on::
                 # This is only needed if you want to enable new relic support
                 # add your license key and app name. Comment it out, or remove all together if you want it disabled.
             newrelic_license_key: 1234ABCooFAKEoKEYoofasdfsaf1234
-            newrelic_app_name: Custom Python application on dotCloud 
+            newrelic_app_name: Custom Python application on dotCloud
 
 
 You will also need to make sure you have your wsgi.py is setup correctly. If you don't have it setup correctly then newrelic won't be able to gather data correctly. See these pages at NewRelic for more information. 
