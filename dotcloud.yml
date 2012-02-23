@@ -1,9 +1,10 @@
 python:
     type: custom
-    buildscript: builder
+    buildscript: python/builder
     systempackages:
         # needed for the Nginx rewrite module
         - libpcre3-dev
+        - python3-all
     ports:
         www: http
     processes:
@@ -14,3 +15,4 @@ python:
             # add your license key. Comment it out, or remove all together if you want it disabled.
         newrelic_license_key: 1234ABCooFAKEoKEYoofasdfsaf1234
         newrelic_app_name: Custom Python application on dotCloud
+        python_version: 3 #can be 2 or 3 defaults to 2. 2 = 2.65
