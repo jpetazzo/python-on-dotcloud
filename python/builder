@@ -66,8 +66,8 @@ create_virtualenv() {
     if [ ! -d $virtualenv_dir ] ; then
         msg "building virtualenv @ $virtualenv_dir"
         find_python_version
-        msg "creating virtualenv @ $virtualenv_dir with python_version = $python_version"
-        virtualenv --python=$python_version $virtualenv_dir
+        msg "creating virtualenv @ $virtualenv_dir with python_version = $python_bin"
+        virtualenv --python=$python_bin $virtualenv_dir
     else
         msg "virtualenv already exists @ $virtualenv_dir , skipping install."
     fi
