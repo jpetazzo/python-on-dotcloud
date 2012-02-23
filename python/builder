@@ -100,7 +100,7 @@ EOF
 
 install_newrelic() {
     
-    if [$newrelic_allowed == "yes"]; then
+    if ["$newrelic_allowed" == "yes"]; then
         msg "NewRelic is allowed"
         
         if test "$SERVICE_CONFIG_NEWRELIC_APP_NAME" ; then
