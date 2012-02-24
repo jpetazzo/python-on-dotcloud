@@ -11,7 +11,7 @@ stage_dir="$start_dir/tmp"
 nginx_stage_dir="$stage_dir/stage"
 virtualenv_stage_dir="$stage_dir/venv"
 virtualenv_dir="$HOME/env"
-pip_install="$virtualenv_dir/bin/pip install"
+pip_install="$virtualenv_dir/bin/pip install --use-mirrors --download-cache=~/.pip-cache "
 requirments_file="$HOME/current/requirements.txt"
 newrelic_config_template="$BUILDERDIR/newrelic.ini.in"
 python_bin="/usr/bin/python2.6"
@@ -144,7 +144,7 @@ install_newrelic() {
 install_requirements(){
     if [ -e "$requirments_file" ]; then
         msg "found requirements.txt file installing requirements from $requirments_file"
-        $pip_install --download-cache=~/.pip-cache -r $requirments_file
+        $pip_install -r $requirments_file
     else
         msg "looked for requirements file at ($requirments_file) and didn't find one. skipping requirements install"
     fi
