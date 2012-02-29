@@ -14,6 +14,11 @@ fi
 # this assumes that your wsgi file is called wsgi.py and lives in /home/dotcloud/current/
 command=$command"/home/dotcloud/env/bin/uwsgi --single-interpreter --enable-threads --pidfile /var/dotcloud/uwsgi.pid -s /var/dotcloud/uwsgi.sock --chmod-socket=660 --master --processes 4 --home /home/dotcloud/env --pythonpath /home/dotcloud/current --disable-logging --harakiri 60 --wsgi-file /home/dotcloud/current/wsgi.py"
 
-echo "Using this command : $command"
-# exeute the command
-$command
+# intercept SIGTERM and propagate it as SIGINT
+trap 'kill -INT %1' SIGTERM
+# start uwsgi
+echo "Starting: $command"
+# execute the command
+$command &
+wait
+echo "Terminated: $command"
